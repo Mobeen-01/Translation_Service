@@ -1,59 +1,246 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📘 Translation Management Service
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A scalable Laravel-based API for managing translations with support for bulk operations, tagging, search, and export.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📑 Table of Contents
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Setup Instructions](#setup-instructions)
+- [Authentication](#authentication)
+- [API Overview](#api-overview)
+- [Design Decisions](#design-decisions)
+- [Testing](#testing)
+- [Future Improvements](#future-improvements)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📖 Overview
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+This service provides a robust backend for managing multilingual translations in a scalable and structured way. It supports efficient querying, bulk operations, and structured export formats for frontend consumption.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
+### 📸 API Documentation Preview
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+![Swagger UI](docs/images/swagger.png)
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 🚀 Features
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Secure authentication using Laravel Sanctum
+- Locale management
+- Translation CRUD operations
+- Bulk translation creation (up to 1000 records)
+- Advanced search (key, content, tag)
+- Translation approval workflow
+- Nested JSON export
+- Pagination support
+- OpenAPI (Swagger) documentation
+- Unit and feature test coverage
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🏗️ Tech Stack
 
-## License
+- PHP 8.2
+- Laravel
+- MySQL
+- Docker (PHP-FPM + Nginx)
+- Laravel Sanctum
+- OpenAPI (Swagger)
+- PHPUnit
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📂 Project Structure
+
+```
+app/
+ ├── Http/
+ ├── Models/
+ ├── Services/
+
+database/
+ ├── migrations/
+ ├── factories/
+ ├── seeders/
+
+docker/
+ └── nginx/
+
+tests/
+ ├── Feature/
+ ├── Unit/
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone Repository
+
+```
+git clone <your-repo-url>
+cd translation-service
+```
+
+### 2. Environment Setup
+
+```
+cp .env.example .env
+```
+
+Update DB config:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=translation_service
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+```
+
+### 3. Run with Docker
+
+```
+docker-compose up -d --build
+```
+
+### 4. Initialize Application
+
+```
+docker exec -it translation_app bash
+
+php artisan key:generate
+php artisan migrate --seed
+```
+
+### 5. Access API
+
+```
+http://localhost:8000/api
+```
+
+---
+
+## 🔐 Authentication
+
+### Login
+
+```
+POST /api/login
+```
+
+```
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+```
+
+Use returned token:
+
+```
+Authorization: Bearer {token}
+```
+
+---
+
+## 📌 API Overview
+
+### Translations
+- GET /translations
+- POST /translations
+- PATCH /translations/{id}
+- DELETE /translations/{id}
+- PATCH /translations/{id}/approve
+
+### Search
+```
+POST /translations/search
+```
+
+```
+{
+  "search_type": "content",
+  "query": "Login",
+  "locale": "en"
+}
+```
+
+### Bulk Create
+```
+POST /translations/bulk
+```
+
+### Export
+```
+GET /export/{locale}
+```
+
+---
+
+## 🧠 Design Decisions
+
+### Service Layer Pattern
+Business logic is centralized in `TranslationService`, ensuring separation of concerns and testability.
+
+### Database Design
+Normalized schema:
+- translation_keys
+- translations
+- locales
+- tags
+
+Ensures scalability and avoids duplication.
+
+### Export Strategy
+Uses `Arr::set()` to convert flat keys into nested JSON structure for frontend consumption.
+
+### Validation
+Handled via FormRequest classes to ensure clean controllers and consistent input validation.
+
+### Performance
+- Indexed database columns
+- Pagination for large datasets
+- Performance tests included
+
+---
+
+## 🧪 Testing
+
+Run all tests:
+
+```
+php artisan test
+```
+
+Includes:
+- Feature tests (API)
+- Unit tests (service layer)
+- Performance benchmarks
+
+---
+
+## 🚧 Future Improvements
+
+- Redis caching
+- Queue-based bulk processing
+- Rate limiting
+- API versioning
+- Role-based access control
+
+---
+
+## 👨‍💻 Author
+
+Production-style backend system for scalable translation management.
